@@ -1,10 +1,16 @@
+import numpy as np
+
 ratio_df = df[['Asset Class/Product Type']].copy()
 
-all_cols = df.columns.tolist()
-start_idx = all_cols.index('SY1 Q1')
-quarter_cols = all_cols[start_idx:]
+cols = df.columns                      # this is a pandas Index
+start_pos = cols.get_loc('SY1 Q1')     # position of the column
 
-ratio_df['SY1 Q1'] = df['SY1 Q1'] / df['Anchored Q0']
+quarter_cols = list(cols[start_pos:])  # columns from SY1 Q1 onward
 
+# SY1 Q1 relative to Anchored Q0
+ratio_df['SY1 Q1'] = np.where(df['Anchored Q0'] != 0, df['SY1 Q1'] / df['Anchored Q0'], np.nan)
+
+# rolling ratios
 for i in range(1, len(quarter_cols)):
-    ratio_df[quarter_cols[i]] = df[quarter_cols[i]] / df[quarter_cols[i-1]]
+    curr, prev = quarter_cols[i], quarter_cols[i-1]
+    ratio_df[curr] = np.where(df[prev] != 0, df[curr] / df[prev], np.nan)
