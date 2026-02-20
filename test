@@ -1,0 +1,56 @@
+import pandas as pd
+
+SY0_MAP = {
+    "2024Q4": "SY0 Q1",
+    "2025Q1": "SY0 Q2",
+    "2025Q2": "SY0 Q3",
+    "2025Q3": "SY0 Q4",
+}
+
+TARGET_METRICS = {
+    "IFRS 9 All Performing Loans - LGD",
+    "IFRS 9 All Performing Loans - 12m PD",
+    "IFRS 9 All Performing Loans - Lifetime PD",
+}
+
+def to_sy0_wide(df):
+    df = df.copy()
+
+    # keep only needed metrics + needed cols
+    keep_cols = ["Sch3 Product", "Metric"] + list(SY0_MAP.keys())
+    df = df[keep_cols]
+    df = df[df["Metric"].isin(TARGET_METRICS)]
+
+    # rename quarter columns to SY0 columns
+    df = df.rename(columns=SY0_MAP)
+
+    # ensure one row per (product, metric)
+    df = df.groupby(["Sch3 Product", "Metric"], as_index=False)[list(SY0_MAP.values())].first()
+    return df
+
+# your 3 dfs (names from your screenshots)
+# df_lgdnd_actual = LGD
+# df12_actual      = 12m PD
+# df_lt_actual      = Lifetime PD
+
+actual_sy0 = pd.concat(
+    [to_sy0_wide(df_lgdnd_actual), to_sy0_wide(df12_actual), to_sy0_wide(df_lt_actual)],
+    ignore_index=True
+)
+
+tmpl = template_actual.copy()
+
+out = tmpl.merge(
+    actual_sy0,
+    left_on=["Asset Class/Product Type", "merging_col"],   # template keys
+    right_on=["Sch3 Product", "Metric"],                  # actual keys
+    how="left",
+    suffixes=("", "_new"),
+)
+
+for c in ["SY0 Q1", "SY0 Q2", "SY0 Q3", "SY0 Q4"]:
+    out[c] = out[f"{c}_new"].combine_first(out[c])  # fill blanks; if you want overwrite, use out[c]=out[f"{c}_new"]
+
+out = out.drop(columns=["Sch3 Product", "Metric"] + [f"{c}_new" for c in ["SY0 Q1","SY0 Q2","SY0 Q3","SY0 Q4"]])
+
+template_actual = out
