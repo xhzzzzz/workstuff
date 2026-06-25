@@ -1,7 +1,1 @@
-1.Led large-scale data analysis across retail credit portfolios by integrating account-level exposure data, behavioral variables, and macroeconomic indicators using Python and SQL. Built structured analytical datasets to investigate portfolio risk dynamics and identify key drivers behind credit performance trends.
-2.Developed quantitative analytics frameworks to analyze credit rating migration and default dynamics, producing scenario-dependent transition matrices and forward-looking risk indicators used for portfolio monitoring and risk assessment under different macroeconomic environments.
-3.Designed scalable ETL pipelines using Python, SQL, and distributed data platforms (Hive/Spark) to extract, clean, and transform millions of observations from multiple data sources, enabling efficient generation of analysis-ready datasets.
-4.Automated recurring analytics and reporting processes by developing Tableau dashboards and Python-based reporting pipelines that visualize portfolio risk metrics, scenario analysis results, and key performance indicators.
-5.Engineered account-level and macroeconomic features from raw financial and behavioral data, applying statistical and techniques to evaluate nonlinear relationships and develop challenger analytical models.
-6.Collaborated closely with cross-functional stakeholders including risk, finance, and data engineering teams to define data logic, validate business rules, and improve the consistency and quality of portfolio analytics datasets.
 
